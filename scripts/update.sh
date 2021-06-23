@@ -29,6 +29,6 @@ apt-get -y purge unattended-upgrades;
 # Upgrade all installed packages incl. kernel and kernel headers
 apt-get -y dist-upgrade -o Dpkg::Options::="--force-confnew";
 
-apt-get install -y linux-generic-hwe-20.04
+[ -z "$HWE_PKG" ] || apt-get install -y linux-generic-$HWE_PKG
 
 reboot;
