@@ -94,12 +94,14 @@
   "provisioners": [
     {
       "environment_vars": [
+        "DOCKER_PKG_VERSION={{user `docker_pkg_version`}}",
         "HOME_DIR=/home/vagrant"
       ],
       "execute_command": "echo 'vagrant' | {{.Vars}} sudo -S -E sh -eux '{{.Path}}'",
       "expect_disconnect": true,
       "scripts": [
         "scripts/update.sh",
+        "scripts/docker.sh",
         "scripts/sshd.sh",
         "scripts/networking.sh",
         "scripts/sudoers.sh",
@@ -112,6 +114,8 @@
     }
   ],
   "variables": {
+    "docker_pkg_version_commnent": "You can change docker_pkg_version to empty string to install latest docker-ce",
+    "docker_pkg_version": "=5:20.10.7~3-0~ubuntu-focal",
     "cpus": "1",
     "disk_size": "8448",
     "memory": "512",
