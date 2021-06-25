@@ -45,18 +45,15 @@ dpkg --list \
     | grep -- '-doc$' \
     | xargs apt-get -y purge;
 
-# Delete packages
+# X11 libraries
+apt-get -y purge libx11-data xauth libxmuu1 libxcb1 libx11-6 libxext6 libxau6;
+
+# obsolete networking packages
+apt-get -y purge ppp pppconfig pppoeconf;
+
+# packages we don't need
+# 21.04+ don't have installation-report
 apt-get -y purge \
-    libx11-data \
-    xauth \
-    libxmuu1 \
-    libxcb1 \
-    libx11-6 \
-    libxext6 \
-    libxau6 \
-    ppp \
-    pppconfig \
-    pppoeconf \
     popularity-contest \
     installation-report \
     command-not-found \
@@ -66,6 +63,10 @@ apt-get -y purge \
     laptop-detect \
     usbutils \
     libusb-1.0-0 \
+;
+
+# Delete packages
+apt-get -y purge \
     binutils \
     console-setup \
     console-setup-linux \
@@ -119,10 +120,11 @@ path-exclude=/usr/share/doc/linux-firmware/*
 #PACKER-END
 _EOF_
 
-# Delete the massive firmware packages
+# Delete the massive firmware files
 rm -rf /lib/firmware/*
 rm -rf /usr/share/doc/linux-firmware/*
 
+# autoremoving packages and cleaning apt data
 apt-get -y autoremove;
 apt-get -y clean;
 
@@ -131,9 +133,22 @@ rm -rf /usr/share/doc/*
 
 # Remove caches
 find /var/cache -type f -exec rm -rf {} \;
+# APT lists. APT will recreate these on the first 'apt update'
+# Recursively remove all files from under the given directory
+find /var/lib/apt/lists -type f -delete
 
-# delete any logs that have built up during the install
-find /var/log/ -name *.log -exec rm -f {} \;
+# truncate any logs that have built up during the install
+find /var/log -type f -exec truncate --size=0 {} \;
 
 # Blank netplan machine-id (DUID) so machines get unique ID generated on boot.
 truncate -s 0 /etc/machine-id
+
+# remove the contents of /tmp and /var/tmp
+rm -rf /tmp/* /var/tmp/*
+
+# force a new random seed to be generated
+rm -f /var/lib/systemd/random-seed
+
+# clear the history so our install isn't there
+rm -f /root/.wget-hsts
+export HISTSIZE=0
