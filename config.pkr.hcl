@@ -21,6 +21,10 @@ variable "docker_pkg_version" {
 // see https://wiki.ubuntu.com/Kernel/LTSEnablementStack
 variable "hwe_pkg" {
   default = ""
+  validation {
+    condition = contains(["", "hwe-20.04", "hwe-20.04-edge"], var.hwe_pkg)
+    error_message = "invalid hwe_pkg var"
+  }
 }
 
 variable "memory" {

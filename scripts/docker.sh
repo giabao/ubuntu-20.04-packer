@@ -3,6 +3,14 @@
 # See https://docs.docker.com/engine/install/ubuntu/
 # And https://get.docker.com
 
+if [ "$DOCKER_PKG_VERSION" = "skip" ]; then
+    exit
+elif [ "$DOCKER_PKG_VERSION" = "latest" ]; then
+    DOCKER_PKG_VERSION=""
+elif [ "$DOCKER_PKG_VERSION" != "" ]; then
+    DOCKER_PKG_VERSION="=$DOCKER_PKG_VERSION"
+fi
+
 export DEBIAN_FRONTEND=noninteractive
 
 apt-get install -y apt-transport-https gnupg

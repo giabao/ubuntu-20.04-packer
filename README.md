@@ -15,13 +15,18 @@ See [LTS Enablement Stacks](https://wiki.ubuntu.com/Kernel/LTSEnablementStack)
 Published to [sandinh/ubuntu-docker box](https://app.vagrantup.com/sandinh/boxes/ubuntu-docker) on app.vagrantup.com
 
 ## Build
+example:
 ```sh
-$ packer build .
+$ packer build -var "docker_pkg_version=skip" .
 ```
-or
-```sh
-$ packer build \
-    -var "docker_pkg_version==5:20.10.7~3-0~ubuntu-focal" \
-    -var "hwe_pkg=hwe-20.04-edge" \
-    .
-```
+
+####vars:
+##### docker_pkg_version
++ `""` (default) | `"latest"` => install latest docker
++ `"skip"` => skip installing docker
++ a version as output in `apt-cache madison docker-ce` => install a specific docker version. Ex:
+`packer build -var "docker_pkg_version=5:20.10.7~3-0~ubuntu-focal" .`
+##### hwe_pkg
++ `""` (default) => skip installing hwe
++ `hwe-20.04` => install `linux-generic-hwe-20.04`
++ `hwe-20.04-edge` => install `linux-generic-hwe-20.04-edge`
