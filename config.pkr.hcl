@@ -23,7 +23,7 @@ variable "hwe_pkg" {
   default = ""
   validation {
     condition = contains(["", "hwe-20.04", "hwe-20.04-edge"], var.hwe_pkg)
-    error_message = "invalid hwe_pkg var"
+    error_message = "Invalid hwe_pkg variable."
   }
 }
 
@@ -122,6 +122,10 @@ build {
 
   post-processor "vagrant" {
     compression_level = "9"
-    output            = "ubuntu-20.04-server-amd64.box"
+    output            = "ubuntu-server-${
+      var.hwe_pkg == ""? "20.04" : var.hwe_pkg
+      }${
+      var.docker_pkg_version == "skip"? "" : "-docker"
+      }.box"
   }
 }
